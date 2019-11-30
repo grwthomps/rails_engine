@@ -72,4 +72,4 @@ describe 'Merchants API - Business Intelligence Endpoints' do
     expect(response).to be_successful
     expect(total_revenue["data"]["attributes"]["total_revenue"].to_i).to eq(65)
   end
-
+end
