@@ -39,4 +39,78 @@ describe "Invoices API" do
     expect(invoice["data"]["attributes"]["customer_id"]).to eq(michael.id)
   end
 
+  it 'can find an invoice by status' do
+    bob = Merchant.create!(name: "Bob's Donuts")
+
+    michael = Customer.create!(first_name: "Michael", last_name: "Scott")
+    pam = Customer.create!(first_name: "Pam", last_name: "Beesly")
+
+    inv_1 = Invoice.create!(status: 'shipped', customer_id: michael.id, merchant_id: bob.id)
+    inv_2 = Invoice.create!(status: 'packaged', customer_id: pam.id, merchant_id: bob.id)
+
+    get "/api/v1/invoices/find?status=shipped"
+
+    invoice = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(invoice["data"]["id"]).to eq(inv_1.id.to_s)
+    expect(invoice["data"]["attributes"]["customer_id"]).to eq(michael.id)
+  end
+
+  it 'can find an invoice by date' do
+    bob = Merchant.create!(name: "Bob's Donuts")
+
+    michael = Customer.create!(first_name: "Michael", last_name: "Scott")
+    pam = Customer.create!(first_name: "Pam", last_name: "Beesly")
+
+    inv_1 = Invoice.create!(status: 'shipped', customer_id: michael.id, merchant_id: bob.id, created_at: "Thurs, 21 Nov 2019 18:49:17 UTC +00:00")
+    inv_2 = Invoice.create!(status: 'packaged', customer_id: pam.id, merchant_id: bob.id)
+
+    get "/api/v1/invoices/find?created_at=#{inv_1.created_at}"
+
+    invoice = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(invoice["data"]["id"]).to eq(inv_1.id.to_s)
+    expect(invoice["data"]["attributes"]["customer_id"]).to eq(michael.id)
+  end
+
+  it 'can find an invoice by customer id' do
+    bob = Merchant.create!(name: "Bob's Donuts")
+
+    michael = Customer.create!(first_name: "Michael", last_name: "Scott")
+    pam = Customer.create!(first_name: "Pam", last_name: "Beesly")
+
+    inv_1 = Invoice.create!(status: 'shipped', customer_id: michael.id, merchant_id: bob.id)
+    inv_2 = Invoice.create!(status: 'packaged', customer_id: pam.id, merchant_id: bob.id)
+
+    get "/api/v1/invoices/find?customer_id=#{michael.id}"
+
+    invoice = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(invoice["data"]["id"]).to eq(inv_1.id.to_s)
+    expect(invoice["data"]["attributes"]["customer_id"]).to eq(michael.id)
+  end
+
+  it 'can find all invoices by a given parameter' do
+    bob = Merchant.create!(name: "Bob's Donuts")
+
+    michael = Customer.create!(first_name: "Michael", last_name: "Scott")
+    pam = Customer.create!(first_name: "Pam", last_name: "Beesly")
+
+    inv_1 = Invoice.create!(status: 'shipped', customer_id: michael.id, merchant_id: bob.id)
+    inv_2 = Invoice.create!(status: 'packaged', customer_id: pam.id, merchant_id: bob.id)
+
+    get "/api/v1/invoices/find_all?merchant_id=#{bob.id}"
+
+    invoices = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(invoices["data"].kind_of?(Array)).to eq(true)
+    expect(invoices["data"].count).to eq(2)
+    expect(invoices["data"].first["id"]).to eq(inv_1.id.to_s)
+    expect(invoices["data"].last["id"]).to eq(inv_2.id.to_s)
+  end
+
 end
