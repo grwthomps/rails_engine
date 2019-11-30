@@ -11,7 +11,7 @@ Rails.application.routes.draw do
         get '/revenue', to: 'revenue#total_revenue'
       end
       resources :merchants, only: [:index, :show]
-      resources :customers, only: [:index]
+      resources :customers, only: [:index, :show]
     end
   end
 end
