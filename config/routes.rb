@@ -11,6 +11,9 @@ Rails.application.routes.draw do
         get '/revenue', to: 'revenue#total_revenue'
       end
       resources :merchants, only: [:index, :show]
+      namespace :customers do
+        get '/find', to: 'search#find'
+      end
       resources :customers, only: [:index, :show]
     end
   end
