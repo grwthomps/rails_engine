@@ -113,4 +113,19 @@ describe "Invoices API" do
     expect(invoices["data"].last["id"]).to eq(inv_2.id.to_s)
   end
 
+  it 'can return a random invoice' do
+    bob = Merchant.create!(name: "Bob's Donuts")
+
+    michael = Customer.create!(first_name: "Michael", last_name: "Scott")
+
+    inv_1 = Invoice.create!(status: 'shipped', customer_id: michael.id, merchant_id: bob.id)
+    inv_2 = Invoice.create!(status: 'packaged', customer_id: michael.id, merchant_id: bob.id)
+
+    get '/api/v1/invoices/random'
+
+    invoice = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(invoice["data"]["type"]).to eq("invoice")
+  end
 end
