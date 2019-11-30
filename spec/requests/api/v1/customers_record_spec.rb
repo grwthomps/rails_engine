@@ -25,4 +25,42 @@ describe 'Customers API' do
     expect(response).to be_successful
     expect(customer["data"]["id"]).to eq(dwight.id.to_s)
   end
+
+  it 'can find a customer by first name' do
+    michael = Customer.create(first_name: "Michael", last_name: "Scott")
+    dwight = Customer.create(first_name: "Dwight", last_name: "Schrute")
+
+    get '/api/v1/customers/find?first_name=Michael'
+
+    customer = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(customer["data"]["id"]).to eq(michael.id.to_s)
+    expect(customer["data"]["attributes"]["first_name"]).to eq(michael.first_name)
+  end
+
+  it 'can find a customer by last name' do
+    michael = Customer.create(first_name: "Michael", last_name: "Scott")
+    dwight = Customer.create(first_name: "Dwight", last_name: "Schrute")
+
+    get '/api/v1/customers/find?last_name=Schrute'
+
+    customer = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(customer["data"]["id"]).to eq(dwight.id.to_s)
+    expect(customer["data"]["attributes"]["last_name"]).to eq(dwight.last_name)
+  end
+
+  it 'can find a customer by date' do
+    michael = Customer.create(first_name: "Michael", last_name: "Scott", created_at: "Thurs, 21 Nov 2019 18:49:17 UTC +00:00")
+    dwight = Customer.create(first_name: "Dwight", last_name: "Schrute")
+
+    get "/api/v1/customers/find?created_at=#{michael.created_at}"
+
+    customer = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(customer["data"]["id"]).to eq(michael.id.to_s)
+  end
 end
