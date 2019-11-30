@@ -63,4 +63,19 @@ describe 'Customers API' do
     expect(response).to be_successful
     expect(customer["data"]["id"]).to eq(michael.id.to_s)
   end
+
+  it 'can find all customers by a given parameter' do
+    michael = Customer.create(first_name: "Michael", last_name: "Scott", created_at: "Thurs, 21 Nov 2019 18:49:17 UTC +00:00")
+    dwight = Customer.create(first_name: "Dwight", last_name: "Schrute", created_at: "Thurs, 21 Nov 2019 18:49:17 UTC +00:00")
+
+    get "/api/v1/customers/find_all?created_at=#{michael.created_at}"
+
+    customers = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(customers["data"].kind_of?(Array)).to eq(true)
+    expect(customers["data"].count).to eq(2)
+    expect(customers["data"].first["id"]).to eq(michael.id.to_s)
+    expect(customers["data"].last["id"]).to eq(dwight.id.to_s)
+  end
 end
