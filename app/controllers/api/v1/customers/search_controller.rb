@@ -1,6 +1,10 @@
 class Api::V1::Customers::SearchController < ApplicationController
   def find
-    customer = render json: CustomerSerializer.new(Customer.find_by(find_params))
+    render json: CustomerSerializer.new(Customer.find_by(find_params))
+  end
+
+  def find_all
+    render json: CustomerSerializer.new(Customer.where(find_params))
   end
 
   private
