@@ -13,4 +13,16 @@ describe 'Customers API' do
     customers = JSON.parse(response.body)
     expect(customers["data"].count).to eq(3)
   end
+
+  it 'can get one customer by its id' do
+    michael = Customer.create(first_name: "Michael", last_name: "Scott")
+    dwight = Customer.create(first_name: "Dwight", last_name: "Schrute")
+
+    get "/api/v1/customers/#{dwight.id}"
+
+    customer = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(customer["data"]["id"]).to eq(dwight.id.to_s)
+  end
 end
