@@ -78,4 +78,17 @@ describe 'Customers API' do
     expect(customers["data"].first["id"]).to eq(michael.id.to_s)
     expect(customers["data"].last["id"]).to eq(dwight.id.to_s)
   end
+
+  it 'can return a random customer' do
+    Customer.create(first_name: "Michael", last_name: "Scott")
+    Customer.create(first_name: "Pam", last_name: "Beesly")
+    Customer.create(first_name: "Dwight", last_name: "Schrute")
+
+    get '/api/v1/customers/random'
+
+    customer = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(customer["data"]["type"]).to eq("customer")
+  end
 end
