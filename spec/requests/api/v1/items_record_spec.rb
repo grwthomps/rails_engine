@@ -75,8 +75,6 @@ describe 'Items API' do
 
     item = JSON.parse(response.body)
 
-    binding.pry
-
     expect(response).to be_successful
     expect(item["data"]["id"]).to eq(lab.id.to_s)
     expect(item["data"]["attributes"]["name"]).to eq(lab.name)
