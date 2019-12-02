@@ -4,7 +4,7 @@ class Api::V1::Items::SearchController < ApplicationController
   end
 
   def find_all
-    render json: ItemSerializer.new(Item.where(find_params))
+    render json: ItemSerializer.new(Item.where(find_params).order(:id))
   end
 
   private

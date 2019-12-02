@@ -4,7 +4,7 @@ class Api::V1::Invoices::SearchController < ApplicationController
   end
 
   def find_all
-    render json: InvoiceSerializer.new(Invoice.where(find_params))
+    render json: InvoiceSerializer.new(Invoice.where(find_params).order(:id))
   end
 
   private
