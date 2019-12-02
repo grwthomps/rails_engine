@@ -4,7 +4,7 @@ class Api::V1::Transactions::SearchController < ApplicationController
   end
 
   def find_all
-    render json: TransactionSerializer.new(Transaction.where(find_params))
+    render json: TransactionSerializer.new(Transaction.where(find_params).order(:id))
   end
 
   private
